@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionCloudTextRecognizerOptions;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
@@ -18,10 +19,16 @@ import java.util.List;
 import java.util.Map;
 
 public class TextRecognizer implements Detector {
-  private final FirebaseVisionTextRecognizer recognizer;
+  private  FirebaseVisionTextRecognizer recognizer;
 
   TextRecognizer(FirebaseVision vision, Map<String, Object> options) {
-    recognizer = vision.getOnDeviceTextRecognizer();
+    List<String> hintedLanguages = new ArrayList<>();
+    hintedLanguages.add("pt");
+    FirebaseVisionCloudTextRecognizerOptions firebaseVisionCloudTextRecognizerOptions = new FirebaseVisionCloudTextRecognizerOptions.Builder()
+            .setLanguageHints(hintedLanguages)
+            .setModelType(1)
+            .build();
+    recognizer = vision.getCloudTextRecognizer(firebaseVisionCloudTextRecognizerOptions);
   }
 
   @Override
