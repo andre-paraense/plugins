@@ -8,9 +8,51 @@
 - (instancetype)initWithVision:(FIRVision *)vision options:(NSDictionary *)options {
   self = [super init];
   if (self) {
-    _recognizer = [vision onDeviceTextRecognizer];
+
+     NSString *recognizerType = options[@"recognizerType"];
+     if ([recognizerType isEqualToString:@"onDevice"]) {
+        _recognizer = [vision onDeviceTextRecognizer];
+     } else if ([recognizerType isEqualToString:@"cloud"]) {
+       FIRVisionCloudTextRecognizerOptions *recognizerOptions =
+           [TextRecognizer parseCloudOptions:options result:result];
+       if (!recognizerOptions){
+           _recognizer = [vision onDeviceTextRecognizer];
+       }else {
+           _recognizer = [vision cloudTextRecognizerWithOptions:recognizerOptions];
+       }
+     } else {
+       NSString *errorString =
+           [NSString stringWithFormat:@"No TextRecognizer for type: %@", recognizerType];
+       @throw(
+           [NSException exceptionWithName:NSInvalidArgumentException reason:errorString userInfo:nil]);
+     }
   }
   return self;
+}
+
+(FIRVisionCloudTextRecognizerOptions *)parseCloudOptions:(NSDictionary *)optionsData
+                                                    result:(FlutterResult)result {
+  FIRVisionCloudTextRecognizerOptions *options = [[FIRVisionCloudTextRecognizerOptions alloc] init];
+
+  options.APIKeyOverride = optionsData[@"apiKeyOverride"];
+
+  options.languageHints = optionsData[@"hintedLanguages"];
+
+
+  NSString *modelType = optionsData[@"modelType"];
+  if ([modelType isEqualToString:@"sparse"]) {
+    options.modelType = FIRVisionCloudTextModelTypeSparse;
+  } else if ([modelType isEqualToString:@"dense"]) {
+    options.modelType = FIRVisionCloudTextModelTypeDense;
+  } else {
+    NSString *errorString = [NSString stringWithFormat:@"No support for model type: %@", modelType];
+    NSError *error = [NSError errorWithDomain:errorString code:[@0 integerValue] userInfo:nil];
+    [FLTFirebaseMlVisionPlugin handleError:error result:result];
+
+    return nil;
+  }
+
+  return options;
 }
 
 - (void)handleDetection:(FIRVisionImage *)image result:(FlutterResult)result {
