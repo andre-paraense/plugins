@@ -8,11 +8,7 @@
 - (instancetype)initWithVision:(FIRVision *)vision options:(NSDictionary *)options {
   self = [super init];
   if (self) {
-    FIRVisionCloudDocumentTextRecognizerOptions *cloudOptions =
-            [[FIRVisionCloudDocumentTextRecognizerOptions alloc] init];
-    cloudOptions.languageHints = @[@"pt"];
-
-    _recognizer = [vision cloudDocumentTextRecognizerWithOptions:cloudOptions];
+    _recognizer = [vision cloudTextRecognizer];
   }
   return self;
 }

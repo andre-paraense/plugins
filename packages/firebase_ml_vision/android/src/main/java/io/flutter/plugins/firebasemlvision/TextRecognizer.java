@@ -7,14 +7,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.text.FirebaseVisionCloudTextRecognizerOptions;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
 import io.flutter.plugin.common.MethodChannel;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +21,7 @@ public class TextRecognizer implements Detector {
   private final FirebaseVisionTextRecognizer recognizer;
 
   TextRecognizer(FirebaseVision vision, Map<String, Object> options) {
-    FirebaseVisionCloudTextRecognizerOptions cloudOptions = new FirebaseVisionCloudTextRecognizerOptions.Builder()
-            .setLanguageHints(Arrays.asList("pt"))
-            .setModelType(FirebaseVisionCloudTextRecognizerOptions.SPARSE_MODEL)
-            //.enforceCertFingerprintMatch()
-            .build();
-    recognizer = vision.getCloudTextRecognizer(cloudOptions);
+    recognizer = vision.getCloudTextRecognizer();
   }
 
   @Override
