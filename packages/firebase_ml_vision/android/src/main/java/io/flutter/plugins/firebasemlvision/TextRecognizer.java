@@ -19,16 +19,27 @@ import java.util.List;
 import java.util.Map;
 
 public class TextRecognizer implements Detector {
-  private  FirebaseVisionTextRecognizer recognizer;
+  private final FirebaseVisionTextRecognizer recognizer;
 
   TextRecognizer(FirebaseVision vision, Map<String, Object> options) {
-    List<String> hintedLanguages = new ArrayList<>();
-    hintedLanguages.add("pt");
-    FirebaseVisionCloudTextRecognizerOptions firebaseVisionCloudTextRecognizerOptions = new FirebaseVisionCloudTextRecognizerOptions.Builder()
-            .setLanguageHints(hintedLanguages)
-            .setModelType(1)
-            .build();
-    recognizer = vision.getCloudTextRecognizer(firebaseVisionCloudTextRecognizerOptions);
+    String recognizerType = (String) options.get("recognizerType");
+    switch (recognizerType) {
+      case "onDevice":
+        recognizer = vision.getOnDeviceTextRecognizer();
+        break;
+      case "cloud":
+        FirebaseVisionCloudTextRecognizerOptions recognizerOptions = new FirebaseVisionCloudTextRecognizerOptions.Builder()
+                .setLanguageHints((List<String>) options.get("hintedLanguages"))
+                .setModelType(((String)options.get("modelType")).equalsIgnoreCase("sparse") ? FirebaseVisionCloudTextRecognizerOptions.SPARSE_MODEL : FirebaseVisionCloudTextRecognizerOptions.DENSE_MODEL)
+                .build();
+
+        recognizer = FirebaseVision.getInstance().getCloudTextRecognizer(recognizerOptions);
+        break;
+      default:
+        throw new IllegalArgumentException(
+                String.format("No TextRecognizer for type: %s", recognizerType));
+    }
+
   }
 
   @Override

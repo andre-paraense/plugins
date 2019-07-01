@@ -67,7 +67,14 @@ class FirebaseVision {
   }
 
   /// Creates an instance of [TextRecognizer].
-  TextRecognizer textRecognizer() => TextRecognizer._(nextHandle++);
+  TextRecognizer textRecognizer() => TextRecognizer._(nextHandle++, <String, dynamic>{'recognizerType': 'onDevice'});
+
+  TextRecognizer cloudTextRecognizer() => TextRecognizer._(nextHandle++, <String, dynamic>{
+    'recognizerType': 'cloud',
+    'hintedLanguages': <String>['pt'],
+    'enforceCertFingerprintMatch': false,
+    'modelType': 'sparse'
+  });
 
   /// Creates a cloud instance of [ImageLabeler].
   ImageLabeler cloudImageLabeler([CloudImageLabelerOptions options]) {

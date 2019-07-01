@@ -19,8 +19,9 @@ part of firebase_ml_vision;
 ///     await textRecognizer.processImage(image);
 /// ```
 class TextRecognizer {
-  TextRecognizer._(this._handle);
+  TextRecognizer._(this._handle, this.options);
 
+  final Map<String, dynamic> options;
   final int _handle;
   bool _hasBeenOpened = false;
   bool _isClosed = false;
@@ -35,7 +36,7 @@ class TextRecognizer {
       'TextRecognizer#processImage',
       <String, dynamic>{
         'handle': _handle,
-        'options': <String, dynamic>{},
+        'options': options,
       }..addAll(visionImage._serialize()),
     );
 
