@@ -14,6 +14,7 @@ import com.google.firebase.ml.vision.text.RecognizedLanguage;
 import io.flutter.plugin.common.MethodChannel;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,24 +23,12 @@ public class TextRecognizer implements Detector {
   private final FirebaseVisionTextRecognizer recognizer;
 
   TextRecognizer(FirebaseVision vision, Map<String, Object> options) {
-    String recognizerType = (String) options.get("recognizerType");
-    switch (recognizerType) {
-      case "onDevice":
-        recognizer = vision.getOnDeviceTextRecognizer();
-        break;
-      case "cloud":
-        FirebaseVisionCloudTextRecognizerOptions recognizerOptions = new FirebaseVisionCloudTextRecognizerOptions.Builder()
-                .setLanguageHints((List<String>) options.get("hintedLanguages"))
-                .setModelType(((String)options.get("modelType")).equalsIgnoreCase("sparse") ? FirebaseVisionCloudTextRecognizerOptions.SPARSE_MODEL : FirebaseVisionCloudTextRecognizerOptions.DENSE_MODEL)
-                .build();
-
-        recognizer = FirebaseVision.getInstance().getCloudTextRecognizer(recognizerOptions);
-        break;
-      default:
-        throw new IllegalArgumentException(
-                String.format("No TextRecognizer for type: %s", recognizerType));
-    }
-
+    FirebaseVisionCloudTextRecognizerOptions cloudOptions = new FirebaseVisionCloudTextRecognizerOptions.Builder()
+            .setLanguageHints(Arrays.asList("pt"))
+            .setModelType(FirebaseVisionCloudTextRecognizerOptions.SPARSE_MODEL)
+            //.enforceCertFingerprintMatch()
+            .build();
+    recognizer = vision.getCloudTextRecognizer(cloudOptions);
   }
 
   @Override
