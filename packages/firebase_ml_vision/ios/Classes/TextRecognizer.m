@@ -8,7 +8,11 @@
 - (instancetype)initWithVision:(FIRVision *)vision options:(NSDictionary *)options {
   self = [super init];
   if (self) {
-    _recognizer = [vision cloudTextRecognizer];
+    FIRVisionCloudTextRecognizerOptions *cloudOptions =
+              [[FIRVisionCloudTextRecognizerOptions alloc] init];
+    cloudOptions.modelType = FIRVisionCloudTextModelTypeDense;
+
+    _recognizer = [vision cloudTextRecognizerWithOptions:cloudOptions];
   }
   return self;
 }
