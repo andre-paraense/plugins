@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.text.FirebaseVisionCloudTextRecognizerOptions;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.ml.vision.text.RecognizedLanguage;
@@ -21,7 +22,11 @@ public class TextRecognizer implements Detector {
   private final FirebaseVisionTextRecognizer recognizer;
 
   TextRecognizer(FirebaseVision vision, Map<String, Object> options) {
-    recognizer = vision.getCloudTextRecognizer();
+    FirebaseVisionCloudTextRecognizerOptions cloudOptions = new FirebaseVisionCloudTextRecognizerOptions.Builder()
+            .setModelType(FirebaseVisionCloudTextRecognizerOptions.DENSE_MODEL)
+            .build();
+
+    recognizer = vision.getCloudTextRecognizer(cloudOptions);
   }
 
   @Override
