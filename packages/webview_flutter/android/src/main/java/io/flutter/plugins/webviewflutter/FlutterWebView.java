@@ -49,6 +49,12 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     // Allow local storage.
     webView.getSettings().setDomStorageEnabled(true);
 
+    webView.getSettings().setLoadWithOverviewMode(true);
+    webView.getSettings().setUseWideViewPort(true);
+    // Pop-up zoom controls disabled. This is a temporary stop because dialog is not responding to touch events.
+    webView.getSettings().setDisplayZoomControls(false);
+    webView.getSettings().setBuiltInZoomControls(true);
+
     methodChannel = new MethodChannel(messenger, "plugins.flutter.io/webview_" + id);
     methodChannel.setMethodCallHandler(this);
 
